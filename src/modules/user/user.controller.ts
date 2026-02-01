@@ -13,9 +13,9 @@ const getAllUsers = async (req: Request, res: Response) => {
 };
 
 const getSingleUser = async (req: Request, res: Response) => {
-    const { id } = req.params;
+    const { userId } = req.params;
 
-    const result = await userServices.getSingleUser(id as string);
+    const result = await userServices.getSingleUser(userId as string);
 
     res.status(200).json({
         success: true,
@@ -25,12 +25,12 @@ const getSingleUser = async (req: Request, res: Response) => {
 };
 
 const updateUser = async (req: Request, res: Response) => {
-    const { id } = req.params;
+    const { userId } = req.params;
     const loggedInUser = req.user as JwtPayload;
 
     if (
         loggedInUser.role === "customer" &&
-        loggedInUser.id !== Number(id)
+        loggedInUser.id !== Number(userId)
     ) {
         return res.status(403).json({
             success: false,
@@ -39,7 +39,7 @@ const updateUser = async (req: Request, res: Response) => {
     }
 
     const updatedUser = await userServices.updateUser(
-        id as string,
+        userId as string,
         req.body,
         loggedInUser.role === "admin"
     );
@@ -53,9 +53,9 @@ const updateUser = async (req: Request, res: Response) => {
 
 
 const deleteUser = async (req: Request, res: Response) => {
-    const { id } = req.params;
+    const { userId } = req.params;
 
-    await userServices.deleteUser(id as string);
+    await userServices.deleteUser(userId as string);
 
     res.status(200).json({
         success: true,

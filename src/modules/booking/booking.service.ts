@@ -107,7 +107,44 @@ const returnBooking = async (bookingId: string) => {
     return { message: "Vehicle returned successfully" };
 };
 
+const cancelBooking = async (bookingId: string, userId: number) => {
+    const bookingResult = await pool.query(
+        `SELECT * FROM bookings WHERE id = $1`,
+        [bookingId]
+    );
+
+    if (bookingResult.rowCount === 0) {
+        throw new Error("Booking not found");
+    }
+
+    const booking = bookingResult.rows[0];
+
+    if (booking.customer_id !== userId) {
+        throw new Error("You can only cancel your own booking");
+    }
+
+    const today = new Date();
+    const startDate = new Date(booking.rent_start_date);
+    if (today >= startDate) {
+        throw new Error("Cannot cancel booking after start date");
+    }
+
+    await pool.query(
+        `UPDATE bookings SET status='cancelled' WHERE id=$1`,
+        [bookingId]
+    );
+
+    await pool.query(
+        `UPDATE vehicles SET availability_status='available' WHERE id=$1`,
+        [booking.vehicle_id]
+    );
+
+    return { message: "Booking cancelled successfully" };
+};
+
+
 export const bookingServices = {
     createBooking,
-    returnBooking
+    returnBooking,
+    cancelBooking
 };

@@ -7,11 +7,11 @@ const getAllUsers = async () => {
     return result.rows;
 };
 
-const getSingleUser = async (id: string) => {
+const getSingleUser = async (userId: string) => {
     const result = await pool.query(
         `SELECT id, name, email, phone, role, created_at 
          FROM users WHERE id=$1`,
-        [id]
+        [userId]
     );
     return result.rows[0];
 };
@@ -36,8 +36,8 @@ const updateUser = async (userId: string, payload: any = {}, isAdmin: boolean) =
 };
 
 
-const deleteUser = async (id: string) => {
-    await pool.query(`DELETE FROM users WHERE id=$1`, [id]);
+const deleteUser = async (userId: string) => {
+    await pool.query(`DELETE FROM users WHERE id=$1`, [userId]);
 };
 
 export const userServices = {

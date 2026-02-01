@@ -7,5 +7,7 @@ const router = express.Router();
 
 router.post("/", auth("customer"), bookingController.createBooking);
 router.put("/:bookingId", auth("admin"), bookingController.returnBooking);
+router.put("/:bookingId/cancel", auth("customer", "admin"), bookingController.cancelBooking);
+
 
 export default router;

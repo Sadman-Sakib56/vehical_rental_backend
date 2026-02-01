@@ -25,7 +25,19 @@ const returnBooking = async (req: Request, res: Response) => {
     });
 };
 
+const cancelBooking = async (req: Request, res: Response) => {
+    const { bookingId } = req.params;
+    const user = req.user!;
+    const result = await bookingServices.cancelBooking(bookingId as string, user.id);
+
+    res.status(200).json({
+        success: true,
+        message: result.message
+    });
+};
+
 export const bookingController = {
     createBooking,
-    returnBooking
+    returnBooking,
+    cancelBooking
 };
