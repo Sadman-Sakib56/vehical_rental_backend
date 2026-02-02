@@ -41,8 +41,6 @@ const initDB = async () => {
 
 
 
-    console.log("databse is connected");
-
 }
 
 export default initDB;
